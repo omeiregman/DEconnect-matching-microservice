@@ -63,16 +63,16 @@ public class FetchInterest {
         return result;
     }
     
-    public InterestMatcher getMatcher(ResultSet resultUser, ResultSet resultAll)throws SQLException{
+    /*public InterestMatcher getMatcher(ResultSet resultUser, ResultSet resultAll)throws SQLException{
         InterestMatcher matcher;
         RowSetFactory reUser = RowSetProvider.newFactory();
         CachedRowSet crs = reUser.createCachedRowSet();
-        crs.populate(resultUser); 
-        
-        crs.
-        
+        crs.populate(resultUser);
+
+        //crs.
+
         return matcher;
-    }
+    }*/
 }
 
 
