@@ -19,11 +19,11 @@ import java.util.*;
 import com.project.team2hackathon.controller.InterestMatcher;
 import javax.sql.rowset.*;
 
-public class FetchInterest {
+public class FetchInterest{
     private int userId;
     private String url, username, password, database;
     private Connection con;
-    
+
     public FetchInterest(int userId)throws SQLException, IOException{
         Properties props = new Properties();
         this.userId = userId;
@@ -37,42 +37,61 @@ public class FetchInterest {
 //            this.username = props.getProperty("jdbc.username");
 //            this.password = props.getProperty("jdbc.password");
 //            this.database = props.getProperty("jdbc.database");
-//            this.con = DriverManager.getConnection(this.url, this.username, this.password); 
-            
-            
+//            this.con = DriverManager.getConnection(this.url, this.username, this.password);
+
+
             String drivers = "com.mysql.jdbc.Driver";
             if(drivers != null) System.setProperty("jdbc.drivers", drivers);
             this.url = "jdbc:mysql://40.121.9.10:3306/admin_deconnect";
             this.username = "user_deconnect";
             this.password = "user_deconnect123";
-            this.con = DriverManager.getConnection(this.url, this.username, this.password); 
+            this.con = DriverManager.getConnection(this.url, this.username, this.password);
         }catch(SQLException e){
             e.printStackTrace();
         }
     }
-    
-    public void setQuery(String query) throws SQLException, IOException{
+
+    public void setQuery(String query) throws SQLException{
         Statement state = this.con.createStatement();
         state.executeUpdate(query);
     }
-    
-    public ResultSet getQuery(String query) throws SQLException, IOException{
+
+    public ResultSet getQuery(String query) throws SQLException{
         Statement state = this.con.createStatement();
         ResultSet result = state.executeQuery(query);
-        
+
         return result;
     }
-    
-    /*public InterestMatcher getMatcher(ResultSet resultUser, ResultSet resultAll)throws SQLException{
-        InterestMatcher matcher;
-        RowSetFactory reUser = RowSetProvider.newFactory();
-        CachedRowSet crs = reUser.createCachedRowSet();
-        crs.populate(resultUser);
 
-        //crs.
+    public ArrayList<Integer> fetchUserInterest(ResultSet result)throws SQLException{
+        ArrayList<Integer> temp = new ArrayList<>();
+        while(result.next()){
+            temp.add(result.getInt("userInterest"));
+        }
 
-        return matcher;
-    }*/
+        return temp;
+    }
+
+    public Map<Integer, ArrayList<Integer>> fetchAllUserInterests(ResultSet result)throws SQLException{
+        Map<Integer, ArrayList<Integer>> allInterests = new HashMap<>();
+
+        while(result.next()){
+            int userId = result.getInt("userId");
+            int interest = result.getInt("userInterest");
+
+            if(!allInterests.containsKey(userId)){
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(interest);
+                allInterests.put(userId, temp);
+            }else{
+                ArrayList<Integer> temp = allInterests.get(userId);
+                temp.add(interest);
+                allInterests.put(userId, temp);
+            }
+        }
+
+        return allInterests;
+    }
 }
 
 
